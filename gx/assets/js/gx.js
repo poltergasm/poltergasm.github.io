@@ -151,16 +151,7 @@ gx.Entity = function(o) {
 window.gx = gx;
 
 (function(w, d) {
-	var cssUrl = "assets/css/russo1.css",
-    	head = document.getElementsByTagName('head')[0],
-    	link = document.createElement('link');
-
-	link.type = "text/css"; 
-	link.rel = "stylesheet";
-	link.href = cssUrl;
-	head.appendChild(link);
-
-	link.onload = function() {
+	w.addEventListener("load", function(e) {
 		var ctx = false;
 		var canvas = d.querySelector('#coue');
 		if (canvas) {
@@ -174,5 +165,5 @@ window.gx = gx;
 
 		gx.setup();
 		gx.load();
-	};
+	});
 })(window, document);
