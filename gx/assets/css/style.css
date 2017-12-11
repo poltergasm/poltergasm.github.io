@@ -1,0 +1,13 @@
+body {
+	background: #000;
+	color: #fff;
+}
+
+canvas#coue {
+	height: 360px;
+	width: 640px;
+}
+
+button#runSlow {
+	margin-left: 30px;
+}
