@@ -21,46 +21,46 @@ gx.ready = function() {
 	};
 
 	gx.init();
-};
 
-// general javascript garbage for buttons
-document.querySelector('#toggleJazz').onclick = function() {
-	var d = this.getAttribute("data-attr");
-	if (d == 'on') {
-		this.setAttribute("data-attr", "off");
-		this.innerHTML = "Toggle ON Jazz";
-		jazz.pause();
-	} else {
-		this.setAttribute("data-attr", "on");
-		this.innerHTML = "Toggle OFF Jazz";
-		jazz.play();
-	}
-};
+	// general javascript garbage for buttons
+	document.querySelector('#toggleJazz').onclick = function() {
+		var d = this.getAttribute("data-attr");
+		if (d == 'on') {
+			this.setAttribute("data-attr", "off");
+			this.innerHTML = "Toggle ON Jazz";
+			jazz.pause();
+		} else {
+			this.setAttribute("data-attr", "on");
+			this.innerHTML = "Toggle OFF Jazz";
+			jazz.play();
+		}
+	};
 
-document.querySelector('#toggleRain').onclick = function() {
-	var d = this.getAttribute("data-attr");
-	if (d == 'on') {
-		this.setAttribute("data-attr", "off");
-		this.innerHTML = "Toggle ON Rain";
-		rain.pause();
-	} else {
-		this.setAttribute("data-attr", "on");
-		this.innerHTML = "Toggle OFF Rain";
-		rain.play();
-	}
-};
+	document.querySelector('#toggleRain').onclick = function() {
+		var d = this.getAttribute("data-attr");
+		if (d == 'on') {
+			this.setAttribute("data-attr", "off");
+			this.innerHTML = "Toggle ON Rain";
+			rain.pause();
+		} else {
+			this.setAttribute("data-attr", "on");
+			this.innerHTML = "Toggle OFF Rain";
+			rain.play();
+		}
+	};
 
-document.querySelector('#runSlow').onclick = function() {
-	var d = this.getAttribute("data-attr");
-	if (d == 'on') {
-		this.setAttribute("data-attr", "off");
-		this.innerHTML = "Normal Mode";
-		spritesheet.ticks = 8;
-		fireplace.render(true);
-	} else {
-		this.setAttribute("data-attr", "on");
-		this.innerHTML = "Slow Mode";
-		spritesheet.ticks = 30;
-		fireplace.render(true);
-	}
+	document.querySelector('#runSlow').onclick = function() {
+		var d = this.getAttribute("data-attr");
+		if (d == 'on') {
+			this.setAttribute("data-attr", "off");
+			this.innerHTML = "Normal Mode";
+			spritesheet.ticks = 8;
+			fireplace.render(true);
+		} else {
+			this.setAttribute("data-attr", "on");
+			this.innerHTML = "Slow Mode";
+			spritesheet.ticks = 30;
+			fireplace.render(true);
+		}
+	};
 };
