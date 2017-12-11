@@ -11,7 +11,7 @@ gx._getPixelRatio = function() {
     return dpr / bsr;
 };
 
-gx.load = function() {
+gx.setup = function() {
 	// a place to store assets
 	var canW = this.canvas.width;
 	var canH = this.canvas.height;
@@ -25,13 +25,17 @@ gx.load = function() {
 	this.canvas.height = canH * ratio;
 	this.canvas.style.width = canW + 'px';
 	this.canvas.style.height = canH + 'px';
+	if (typeof this.ready !== "undefined")
+		this.ready();
+};
 
+gx.load = function() {
 	// fill background to black
 	this.ctx.fillStyle = '#000';
 	this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 	this.ctx.font = '32px "Russo One"';
 	this.ctx.fillStyle = 'white';
-	this.ctx.fillText('Loading assets...', 20, canH/2);
+	this.ctx.fillText('Loading assets...', 20, this.canvas.height/2);
 };
 
 gx.loadAssets = function() {
@@ -147,16 +151,28 @@ gx.Entity = function(o) {
 window.gx = gx;
 
 (function(w, d) {
-	var ctx = false;
-	var canvas = d.querySelector('#coue');
-	if (canvas) {
-		// store canvas and context into game object
-		gx.canvas = canvas;
-		gx.ctx    = canvas.getContext('2d');
-	} else {
-		// couldn't find canvas element
-		console.error("Unable to locate canvas");
-	}
+	var cssUrl = "assets/css/russo1.css",
+    	head = document.getElementsByTagName('head')[0],
+    	link = document.createElement('link');
 
-	setTimeout(function() { gx.load() }, 1000);
+	link.type = "text/css"; 
+	link.rel = "stylesheet";
+	link.href = cssUrl;
+	head.appendChild(link);
+
+	link.onload = function() {
+		var ctx = false;
+		var canvas = d.querySelector('#coue');
+		if (canvas) {
+			// store canvas and context into game object
+			gx.canvas = canvas;
+			gx.ctx    = canvas.getContext('2d');
+		} else {
+			// couldn't find canvas element
+			console.error("Unable to locate canvas");
+		}
+
+		gx.setup();
+		gx.load();
+	};
 })(window, document);

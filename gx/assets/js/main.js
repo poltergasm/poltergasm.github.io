@@ -1,25 +1,27 @@
 // gx related shit
-var jazz       = gx.Audio("assets/snd/jazz.ogg");
-var rain       = gx.Audio("assets/snd/rain.ogg");
+gx.ready = function() {
+	var jazz       = gx.Audio("assets/snd/jazz.ogg");
+	var rain       = gx.Audio("assets/snd/rain.ogg");
 
-var spritesheet = gx.Spritesheet("assets/img/fireplace.png", {
-	frameWidth: 640,
-	frameHeight: 360,
-	frames: 21
-});
+	var spritesheet = gx.Spritesheet("assets/img/fireplace.png", {
+		frameWidth: 640,
+		frameHeight: 360,
+		frames: 21
+	});
 
-var fireplace = gx.Entity({
-	name: "Fireplace",
-	anim: spritesheet
-});
+	var fireplace = gx.Entity({
+		name: "Fireplace",
+		anim: spritesheet
+	});
 
-gx.onload = function() {
-	fireplace.render();
-	jazz.play();
-	rain.play();
+	gx.onload = function() {
+		fireplace.render();
+		jazz.play();
+		rain.play();
+	};
+
+	gx.init();
 };
-
-gx.init();
 
 // general javascript garbage for buttons
 document.querySelector('#toggleJazz').onclick = function() {
