@@ -158,5 +158,5 @@ window.gx = gx;
 		console.error("Unable to locate canvas");
 	}
 
-	gx.load();
+	setTimeout(function() { gx.load() }, 1000);
 })(window, document);
