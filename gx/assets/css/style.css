@@ -1,6 +1,12 @@
+@import url('https://fonts.googleapis.com/css?family=Russo+One');
+
 body {
 	background: #000;
 	color: #fff;
+}
+
+h1 {
+	font-family: 'Russo One', sans-serif;	
 }
 
 canvas#coue {

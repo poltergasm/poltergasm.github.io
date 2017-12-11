@@ -1,18 +1,40 @@
 var gx = function() {};
 
+gx._getPixelRatio = function() {
+	dpr = window.devicePixelRatio || 1,
+    bsr = this.ctx.webkitBackingStorePixelRatio ||
+          this.ctx.mozBackingStorePixelRatio ||
+          this.ctx.msBackingStorePixelRatio ||
+          this.ctx.oBackingStorePixelRatio ||
+          this.ctx.backingStorePixelRatio || 1;
+
+    return dpr / bsr;
+};
+
 gx.load = function() {
 	// a place to store assets
+	var canW = this.canvas.width;
+	var canH = this.canvas.height;
+	var ratio = this._getPixelRatio();
+
 	this.assets 	= [];
 	this.images     = [];
 	this.audio      = [];
 	this.imagePaths = [];
+	this.canvas.width = canW * ratio;
+	this.canvas.height = canH * ratio;
+	this.canvas.style.width = canW + 'px';
+	this.canvas.style.height = canH + 'px';
+
 	// fill background to black
-	this.ctx.fillStyle = '#000000';
+	this.ctx.fillStyle = '#000';
 	this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+	this.ctx.font = '32px "Russo One"';
+	this.ctx.fillStyle = 'white';
+	this.ctx.fillText('Loading assets...', 20, canH/2);
 };
 
 gx.loadAssets = function() {
-	// TODO: add audio
 	var images = this.images;
 	var audio  = this.audio;
 	var assets = images.concat(audio);
@@ -36,7 +58,6 @@ gx.loadAssets = function() {
 			}
 
 		}, true);
-		//this.assets.push(img);
 	}
 };
 
