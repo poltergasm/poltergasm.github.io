@@ -8,8 +8,8 @@ h1 {
 }
 
 canvas#coue {
-	height: 360px;
-	width: 640px;
+	height: 360;
+	width: 640;
 }
 
 button#runSlow {
