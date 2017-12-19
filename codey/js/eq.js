@@ -2,6 +2,7 @@
 	// eq settings
 	var EQ 			= {}
 	EQ.level 		= [];
+	EQ.topLen       = 6;
 	EQ.origLevel 	= [];
 	EQ.map 			= d.querySelector('#map');
 	EQ.infoNode 	= d.querySelector('#info');
