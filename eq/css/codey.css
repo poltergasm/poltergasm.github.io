@@ -17,7 +17,7 @@ body {
 	padding-left: 10px;
 	padding-right: 10px;
 	padding-top: 15px;
-	font-size: 20px;
+	font-size: 30px;
 	border-radius: 4px 4px 0 0;
 }
 
@@ -28,12 +28,14 @@ body {
 	color: #fff;
 	background: #000;
 	border-radius: 0 0 4px 4px;
+	font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
 }
 
 #editor {
 	width: 100%;
 	height: 315px;
 	border-radius: 4px;
+	font-size: 15px;
 }
 
 #run {
@@ -87,6 +89,9 @@ body {
 	font-size: 16px;
 }
 
-.isPath { padding-left: 8px; }
+.isPath { padding-left: 13px; }
 
-#hearts { color: #ff0000; }
+#hearts {
+	color: #ff0000;
+	font-size: 20px;
+}
