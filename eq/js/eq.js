@@ -1,4 +1,36 @@
 (function() {
+	var interval = {
+	    //to keep a reference to all the intervals
+	    intervals : {},
+
+	    //create another interval
+	    make : function ( fun, delay ) {
+	        //see explanation after the code
+	        var newInterval = setInterval.apply(
+	            window,
+	            [ fun, delay ].concat( [].slice.call(arguments, 2) )
+	        );
+
+	        this.intervals[ newInterval ] = true;
+
+	        return newInterval;
+	    },
+
+	    //clear a single interval
+	    clear : function ( id ) {
+	        return clearInterval( this.intervals[id] );
+	    },
+
+	    //clear all intervals
+	    clearAll : function () {
+	        var all = Object.keys( this.intervals ), len = all.length;
+
+	        while ( len --> 0 ) {
+	            clearInterval( all.shift() );
+	        }
+	    }
+	};
+
 	class EQuest {
 		constructor() {
 			this.level  	= [];
@@ -36,6 +68,7 @@
 			let atkPower    = 0;
 			let defPower	= 0;
 			let health      = 0;
+			let canPatrol   = false;
 			let name 		= "Unknown";
 
 			switch(n) {
@@ -79,6 +112,16 @@
 					n 		 = "&#x1F980";
 					name     = "Crab";
 					break;
+				case "m":
+					// Monster
+					isEnemy	 = true;
+					canPatrol = true;
+					atkPower = 2;
+					defPower = 2;
+					health   = 1;
+					n 		 = "&#128126";
+					name     = "Monster";
+					break;
 				case "f":
 					// Fire
 					isEnemy  = true;
@@ -117,6 +160,10 @@
 				this.setAttr(r, "attack-power", atkPower);
 				this.setAttr(r, "defence-power", defPower);
 				this.setAttr(r, "max-health", health);
+				if (canPatrol) {
+					this.setAttr(r, "patrol", "true");
+					this.setAttr(r, "loc", i);
+				}
 			} else if (isPlayer) {
 				r.className = r.className + " Player";
 				this.setAttr(r, "loc", i);
@@ -137,6 +184,9 @@
 		}
 
 		updateMap() {
+			// clear any intervals
+			interval.clearAll();
+
 			// fill hearts
 			let hearts = "";
 			for (let i = 0; i < this.player.hearts; i++) {
@@ -156,6 +206,51 @@
 				this.createCol(row, this.level[i], i);
 				if (i > 0 && (i+1) % this.mapWidth === 0) {
 					row = this.createRow();
+				}
+			}
+
+			// patrolling enemies
+			let patrols = document.querySelectorAll("[data-patrol='true']");
+			if (patrols.length > 0) {
+				let pLen = patrols.length;
+				let dirs = ["north", "east", "south", "west"];
+				let base = this;
+				for (let i = 0; i < pLen; i++) {
+					let m = patrols[i];
+					let mloc = parseInt(patrols[i].getAttribute("data-loc"));
+					interval.make(function() {
+						console.log(mloc);
+						// pick a direction to walk
+						let dir = dirs[Math.floor(Math.random() * dirs.length)];
+						switch(dir) {
+							case "north": dir = (mloc - base.mapWidth); break;
+							case "east" : dir = (mloc + 1); break;
+							case "south": dir = (mloc + base.mapWidth); break;
+							case "west" : dir = (mloc - 1); break;
+						}
+
+						console.log("Going from %d to %d", mloc, dir);
+						// can we go that way?
+						if (typeof base.level[dir] !== "undefined") {
+							let tile = document.querySelector("[data-tile='" + dir + "']");
+							let tileName = base.getAttr(tile, "name");
+							if (tileName == "Player") {
+								EQuest.info("You were squashed by <strong>" + base.getAttr(m, "name") + "</strong>");
+								setTimeout(function() {
+									base.killPlayer();
+									interval.clearAll();
+								}, 1000);
+							} else {
+								if (tileName == "path") {
+									base.level[dir] = "m";
+									base.level[mloc] = "=";
+									base.updateMap();
+								} else {
+									console.log("Can't move to %s", base.getAttr(tile, "name"));
+								}
+							}
+						}
+					}, 5000);
 				}
 			}
 		}
