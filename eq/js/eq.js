@@ -219,7 +219,6 @@
 					let m = patrols[i];
 					let mloc = parseInt(patrols[i].getAttribute("data-loc"));
 					interval.make(function() {
-						console.log(mloc);
 						// pick a direction to walk
 						let dir = dirs[Math.floor(Math.random() * dirs.length)];
 						switch(dir) {
