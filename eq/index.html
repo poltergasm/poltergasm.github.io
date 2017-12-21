@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<title>EmojiQuest</title>
+		<link rel="stylesheet" type="text/css" href="css/skeleton.css"/>
+		<link rel="stylesheet" type="text/css" href="css/codey.css"/>
+	</head>
+	<body>
+		<section class="game">
+			<div class="container">
+				<div class="row">
+					<div class="twelve columns">
+						<h1>EmojiQuest</h1>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="twelve columns">
+						<div class="three columns">
+							<div id="hearts"></div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="twelve columns">
+						<div class="three columns">
+							<div id="map"></div>
+							<div id="info"></div>
+						</div>
+						<div class="six columns">
+<div id="editor">
+class Game {
+	constructor(player) {
+
+	}
+}
+	</div>
+					</div>
+					<div class="three columns">
+						<button class="button-primary" id="run">Run!</button><br>
+						<button class="button" id="reset">Reset</button>
+					</div>
+				</div>
+				<div class="row">
+					<div class="six columns">
+						<div class="tips">
+							<div class="tips-heading">Tips</div>
+							<div class="tips-body">Codey the Wizard, like any other programmer, loves caffeine. Can you help him reach the coffee? The only way to make him move is by code.</div>
+						</div>
+					</div>
+					<div class="six columns">
+						<div class="import">
+							<div class="import-heading">Import Map</div>
+							<div class="import-body">
+								<form class="import-map">
+									<div class="row">
+										<label for="mapcode">Map Code:</label>
+										<input type="text" class="u-full-width" id="mapcode" placeholder="['x', 'x', '@']">
+									</div>
+									<div class="row">
+										<button class="button-primary" id="submitMap">Import</button>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>	
+				</div>
+			</div>
+		</section>
+		<script src="js/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/eq.js" type="text/javascript"></script>
+		<script src="js/main.js" type="text/javascript"></script>
+	</body>
+</html>

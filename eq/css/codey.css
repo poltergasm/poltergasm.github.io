@@ -1,0 +1,82 @@
+body {
+	background: #333;
+	margin-top: 40px;
+}
+
+.container {
+	background: #fff;
+	border-radius: 10px;
+	padding: 15px 15px 50px 15px;
+}
+
+#map {
+	width: 100%;
+	min-height: 200px;
+	background: #000;
+	color: #fff;
+	padding-left: 10px;
+	padding-top: 15px;
+	font-size: 20px;
+	border-radius: 4px 4px 0 0;
+}
+
+#info {
+	width: 100%;
+	min-height: 50px;
+	padding: 5px 0 5px 10px;
+	color: #fff;
+	background: #000;
+	border-radius: 0 0 4px 4px;
+}
+
+#editor {
+	width: 100%;
+	height: 315px;
+	border-radius: 4px;
+}
+
+#run {
+}
+
+.tips {
+	border: 1px solid #c0c0c0;
+	border-radius: 4px;
+	margin-top: 20px;
+}
+
+.tips-heading {
+	background-color: #33c3f0;
+	font-size: 21px;
+	text-transform: uppercase;
+	color: #fff;
+	text-align: center;
+}
+
+.tips-body {
+	padding: 10px;
+	font-size: 16px;
+}
+
+.import {
+	border: 1px solid #c0c0c0;
+	border-radius: 4px;
+	margin-top: 20px;
+}
+
+.import-heading {
+	/*background-color: #c0c0c0;*/
+	border-bottom: 1px solid #c0c0c0;
+	font-size: 21px;
+	text-transform: uppercase;
+	color: #000;
+	text-align: center;
+}
+
+.import-body {
+	padding: 10px;
+	font-size: 16px;
+}
+
+.isPath { padding-left: 8px; }
+
+#hearts { color: #ff0000; }
