@@ -1,10 +1,11 @@
 
 EQuest.onload = function() {
 	this.level =  ['x', 'x', 'x', 'x', 'x', 'x',
-                 'x', '@', 'x', 'x', 'f', 'x',
-                 'x', '=', 'g', 'x', 'x', 'x',
-                 'x', 'c', 'x', 'x', 'x', 'x',
-                 'x', 'e', 'x', 'x', 'x', 'x'];
+                 'x', '@', 'x', '=', 'm', 'x',
+                 'x', '=', 'g', '=', '=', 'x',
+                 'x', 'c', 'x', '=', '=', 'x',
+                 'x', 'e', 'x', 'x', 's', 'x',
+                 'x', 'x', 'x', 'x', 'x', 'x'];
     this.origLevel = this.level.slice();
     this.player.loc = 7;
 
