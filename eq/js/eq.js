@@ -229,7 +229,6 @@
 							case "west" : dir = (mloc - 1); break;
 						}
 
-						console.log("Going from %d to %d", mloc, dir);
 						// can we go that way?
 						if (typeof base.level[dir] !== "undefined") {
 							let tile = document.querySelector("[data-tile='" + dir + "']");
@@ -245,8 +244,6 @@
 									base.level[dir] = "m";
 									base.level[mloc] = "=";
 									base.updateMap();
-								} else {
-									console.log("Can't move to %s", base.getAttr(tile, "name"));
 								}
 							}
 						}
