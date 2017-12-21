@@ -45,8 +45,67 @@ class Game {
 				<div class="row">
 					<div class="six columns">
 						<div class="tips">
-							<div class="tips-heading">Tips</div>
-							<div class="tips-body">Codey the Wizard, like any other programmer, loves caffeine. Can you help him reach the coffee? The only way to make him move is by code.</div>
+							<div class="tips-heading">Tip Cards</div>
+							<div class="tips-body">
+								<div class="tip-card-control">
+									<a href="javascript:;">&lt; Go back to menu</a>
+								</div>
+								<div class="tip-card-body" id="tip-movement">
+									You can move by calling <code>player.move(direction)</code>. For example:
+<pre><code>
+class Game {
+    constructor(player) {
+        player.move("south");
+        player.move("east");
+    }
+}</code></pre>
+								The only parameters <code>move</code> will accept is "north", "east", "south", and "west".
+								</div>
+								<div class="tip-card-body" id="tip-recon">
+									You can perform recon by using <code>player.look(direction)</code>. If you're unsure what a specific tile is, it will tell you. It's also a great way of making sure the enemy you're about to attack is challenging so you can run instead!<br>
+									Like <code>move</code>, the look method also only supports "north", "east", "south", and "west".
+								</div>
+								<div class="tip-card-body" id="tip-fighting">
+									To fight an enemy, simply make sure you're on a tile <strong>around</strong> the enemy, and use <code>player.attack("enemyname")</code>. As long as it's one tile away, the player will find it and start attacking immediately.<br>
+									Be careful where you're walking, as landing on the same tile as an enemy <strong>will end you immediately</strong>.<br><br>
+									Once the <code>attack</code> method is called, the player will begin attacking automatically. The chance of success is based on your attack power and enemies defence power. If the enemy rolls higher than you, it will attempt to attack you, in which case it takes your defence power into consideration.<br>
+									Be sure you look for objects that increase your attack/defence power to make fights quicker and easier.<br><Br>
+									<strong>Example Code</strong>
+<pre><code>
+class Game {
+    constructor(player) {
+        player.move("east");
+        player.attack("crab");
+    }
+}</code></pre>
+								</div>
+								<div class="tip-card-body" id="tip-events">
+									After some specific actions events are triggered. You can catch them by simply creating a method in your Game class to catch it.<br>
+									As an example, you can issue a block of code after defeating an enemy in battle with <code>onattackend</code> as shown below.<br><br>
+<pre><code>
+class Game {
+    constructor(player) {
+        // store a copy of the player instance
+        this.player = player;
+        player.move("south");
+        player.attack("crab");
+    }
+
+    onattackend(mob) {
+        this.player.move("east");
+        this.player.look("west");
+        console.log("I hath slayed the mighty %s",
+            mob);
+    }
+}</code></pre>
+								</div>
+								<ol id="tip-card-menu">
+									<li><a href="javascript:;" class="tip-card" data-attr="movement">Movement</a></li>
+									<li><a href="javascript:;" class="tip-card" data-attr="recon">Recon</a></li>
+									<li><a href="javascript:;" class="tip-card" data-attr="fighting">Fighting</a></li>
+									<li><a href="javascript:;" class="tip-card" data-attr="events">Events</a></li>
+								</ol>
+							</div>
 						</div>
 					</div>
 					<div class="six columns">

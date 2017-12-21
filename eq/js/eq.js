@@ -35,6 +35,7 @@
 			let isEnemy 	= false;
 			let atkPower    = 0;
 			let defPower	= 0;
+			let health      = 0;
 			let name 		= "Unknown";
 
 			switch(n) {
@@ -65,6 +66,7 @@
 					isEnemy  = true;
 					atkPower = 3;
 					defPower = 5;
+					health   = 6;
 					n        = "&#128123";
 					name     = "Ghost";
 					break;
@@ -73,6 +75,7 @@
 					isEnemy	 = true;
 					atkPower = 2;
 					defPower = 1;
+					health   = 3;
 					n 		 = "&#x1F980";
 					name     = "Crab";
 					break;
@@ -81,6 +84,7 @@
 					isEnemy  = true;
 					atkPower = 1000;
 					defPower = 9000;
+					health   = 9000;
 					n 		 = "&#128293";
 					name 	 = "fire";
 					break;
@@ -112,6 +116,7 @@
 				this.setAttr(r, "enemy", "true");
 				this.setAttr(r, "attack-power", atkPower);
 				this.setAttr(r, "defence-power", defPower);
+				this.setAttr(r, "max-health", health);
 			} else if (isPlayer) {
 				r.className = r.className + " Player";
 				this.setAttr(r, "loc", i);
@@ -204,44 +209,57 @@
 		}
 
 		fightMob(mob, tile) {
-			let mobDef = parseInt(this.getAttr(tile, "defence-power"));
-			let mobAtk = parseInt(this.getAttr(tile, "attack-power"));
+			let mobDef 		= parseInt(this.getAttr(tile, "defence-power"));
+			let mobAtk 		= parseInt(this.getAttr(tile, "attack-power"));
+			let mobHealth 	= parseInt(this.getAttr(tile, "max-health"));
 			let fighting = true;
 			let base = this;
 			let combat = setInterval(function() {
 				let playerRoll = Math.floor(Math.random() * (base.player.attackPower+1));
 				let mobRoll    = Math.floor(Math.random() * (mobDef+1));
-
 				if (playerRoll > mobRoll) {
-					EQuest.info("You slayed the <strong>" + mob + "</strong>");
-					base.level[base.getAttr(tile, "tile")] = "=";
-					base.updateMap();
-					base.player.fighting = false;
+					mobHealth = mobHealth - playerRoll;
+					if (mobHealth < 1) {
+						EQuest.info("You slayed the <strong>" + mob + "</strong>");
+						base.level[base.getAttr(tile, "tile")] = "=";
+						base.updateMap();
+						base.player.fighting = false;
 
-					if (typeof Game.onattackend !== "undefined") {
-						Game.onattackend(mob);
-					}
-
-					clearInterval(combat);
-					return true;
-				}
-
-				// continue fighting
-				if (playerRoll == mobRoll) {
-					EQuest.info("The <strong>" + mob + "</strong> evaded your attack");
-				} else {
-					let damageTaken = base.player.takeDamage(Math.floor(Math.random() * mobAtk));
-					if (damageTaken !== false) {
-						if (damageTaken == 0) {
-							EQuest.info("You dodged the <strong>" + mob + "'s</strong> attack");
-						} else {
-							EQuest.info("The <strong>" + mob + "</strong> hit you for <strong>" + damageTaken + "</strong> damage");
-							base.updateMap();
+						if (typeof Game.onattackend !== "undefined") {
+							try {
+								Game.onattackend(mob);
+							} catch(err) {
+								console.log("An error occurred in the onattackend callback: %s", err);
+								clearInterval(combat);
+								return true;
+							}
 						}
-					} else {
-						base.killPlayer();
-						base.fighting = false;
+
 						clearInterval(combat);
+						return true;
+					} else {
+						EQuest.info("You hit the <strong>" + mob + "</strong> for <strong>" + playerRoll + "</strong> damage");
+						EQuest.info("It has <strong>" + mobHealth + "</strong> remaining", true);
+					}
+				} else {
+
+					// continue fighting
+					if (playerRoll == mobRoll) {
+						EQuest.info("The <strong>" + mob + "</strong> evaded your attack");
+					} else {
+						let damageTaken = base.player.takeDamage(Math.floor(Math.random() * mobAtk));
+						if (damageTaken !== false) {
+							if (damageTaken == 0) {
+								EQuest.info("You dodged the <strong>" + mob + "'s</strong> attack");
+							} else {
+								EQuest.info("The <strong>" + mob + "</strong> hit you for <strong>" + damageTaken + "</strong> damage");
+								base.updateMap();
+							}
+						} else {
+							base.killPlayer();
+							base.fighting = false;
+							clearInterval(combat);
+						}
 					}
 				}
 			}, 3000);
@@ -308,6 +326,39 @@
 				EQuest.info("I'm not walking into the void");
 			}
 		}
+
+		look(d) {
+			let t = 0;
+			let loc = this.player.loc;
+			switch(d.toLowerCase()) {
+				case "north": t = (loc - this.mapWidth); break;
+				case "east" : t = (loc + 1); break;
+				case "south": t = (loc + this.mapWidth); break;
+				case "west" : t = (loc - 1); break;
+				default:
+					EQuest.info("I'm not sure how to look that way");
+					break;
+			}
+
+			if (t != 0) {
+				if (typeof this.level[t] !== "undefined") {
+					let tile = document.querySelector("[data-tile='" + t + "']");
+					EQuest.info("You see a <strong>" + this.getAttr(tile, "name") + "</strong>");
+
+					// is it an enemy?
+					if (this.getAttr(tile, "enemy")) {
+						let mobDef = parseInt(this.getAttr(tile, "defence-power"));
+						EQuest.info("It has <strong>" + mobDef + "</strong> defence", true);
+						let diff = (this.player.attackPower / mobDef) * 100;
+						if (diff < 50) {
+							EQuest.info("This enemy will be challenging", true);
+						}
+					}
+				} else {
+					EQuest.info("There is nothing there");
+				}
+			}
+		}
 	}
 
 	let e = new EQuest();
@@ -325,6 +376,7 @@
 		move(d) { this.eq.move(d); }
 		attack(m) { this.eq.attack(m); }
 		takeDamage(n) { return this.eq.takeDamage(n); }
+		look(d) { this.eq.look(d); }
 	}
 
 	e.player = new Player(e);
