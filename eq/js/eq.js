@@ -81,24 +81,26 @@
 					// The Player
 					isPlayer = true;
 					n 		 = "mage";
-					idx   	 = 6;
+					idx   	 = 8;
 					name 	 = "Player";
 					break;
 				case "d":
 					// Player death
 					isPlayer = true;
-					n 		 = "&#9980";
+					n 		 = "skull";
+					idx 	 = 10;
 					name 	 = "Player";
 					break;
 				case "x":
 					// Solid wall
-					idx 	 = 9;
+					idx 	 = 12;
 					n 		 = "tree";
 					name 	 = "wall";
 					break;
 				case "e":
 					// Exit
-					n 		 = "&#128682";
+					idx 	 = 2;
+					n 		 = "door";
 					name 	 = "door";
 					break;
 				case "g":
@@ -108,7 +110,7 @@
 					defPower = 5;
 					health   = 6;
 					n        = "ghost";
-					idx 	 = 3;
+					idx 	 = 5;
 					name     = "Ghost";
 					break;
 				case "c":
@@ -121,6 +123,16 @@
 					n 		 = "crab";
 					name     = "Crab";
 					break;
+				case "k":
+					// Scorpion
+					isEnemy	 = true;
+					atkPower = 3;
+					defPower = 1;
+					health   = 3;
+					idx 	 = 9;
+					n 		 = "scorpion";
+					name     = "Scorpion";
+					break;
 				case "m":
 					// Monster
 					isEnemy	 = true;
@@ -128,7 +140,7 @@
 					atkPower = 2;
 					defPower = 2;
 					health   = 1;
-					idx 	 = 5;
+					idx 	 = 7;
 					n 		 = "jellyfish";
 					name     = "Jellyfish";
 					break;
@@ -138,12 +150,13 @@
 					atkPower = 1000;
 					defPower = 9000;
 					health   = 9000;
-					n 		 = "&#128293";
+					idx 	 = 3;
+					n 		 = "fire";
 					name 	 = "fire";
 					break;
 				case "s":
 					// Gemstone
-					idx  	 = 2;
+					idx  	 = 4;
 					n 		 = "gemstone";
 					name 	 = "gemstone";
 					isGem    = true;
@@ -165,7 +178,7 @@
 					break;
 				default:
 					// Unknown characters fill with solid wall
-					idx 	 = 9;
+					idx 	 = 12;
 					n 		 = "tree";
 					name 	 = "wall";
 					break;
@@ -224,7 +237,7 @@
 
 			// fill hearts
 			let hearts = "";
-			let heartSrc = sprites.canvas.sprites[4].src;
+			let heartSrc = sprites.canvas.sprites[6].src;
 			for (let i = 0; i < this.player.hearts; i++) {
 				hearts += '<img class="sprite" src="' + heartSrc + '">';
 			}
@@ -246,7 +259,7 @@
 			}
 
 			// gems
-			let gemSrc = sprites.canvas.sprites[2].src;
+			let gemSrc = sprites.canvas.sprites[4].src;
 			let gems = document.querySelectorAll("[data-gem='true']");
 			this.gems = gems.length;
 			let gemPrint = "";
