@@ -291,10 +291,8 @@
 							let tileName = base.getAttr(tile, "name");
 							if (tileName == "Player") {
 								EQuest.info("You were squashed by <strong>" + base.getAttr(m, "name") + "</strong>");
-								setTimeout(function() {
-									base.killPlayer();
-									interval.clearAll();
-								}, 1000);
+								base.killPlayer();
+								interval.clearAll();
 							} else {
 								if (tileName == "path") {
 									base.level[dir] = "m";
@@ -354,6 +352,7 @@
 			this.player.isDead = false;
 			this.player.loc    = 7;
 			this.player.hearts = 8;
+			this.player.attackPower = 1;
 			this.updateMap();
 			EQuest.info("Let's try this again...");
 		}
