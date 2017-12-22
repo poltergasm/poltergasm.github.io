@@ -1,32 +1,31 @@
 (function() {
 	var interval = {
-	    //to keep a reference to all the intervals
+	    // a reference to all intervals
 	    intervals : {},
 
-	    //create another interval
-	    make : function ( fun, delay ) {
-	        //see explanation after the code
+	    // create a new interval
+	    make : function (fn, delay) {
 	        var newInterval = setInterval.apply(
 	            window,
-	            [ fun, delay ].concat( [].slice.call(arguments, 2) )
+	            [ fn, delay ].concat([].slice.call(arguments, 2))
 	        );
 
-	        this.intervals[ newInterval ] = true;
+	        this.intervals[newInterval] = true;
 
 	        return newInterval;
 	    },
 
-	    //clear a single interval
-	    clear : function ( id ) {
-	        return clearInterval( this.intervals[id] );
+	    // clear a single interval
+	    clear : function (id) {
+	        return clearInterval(this.intervals[id]);
 	    },
 
-	    //clear all intervals
+	    // clear all intervals
 	    clearAll : function () {
-	        var all = Object.keys( this.intervals ), len = all.length;
+	        var all = Object.keys(this.intervals), len = all.length;
 
 	        while ( len --> 0 ) {
-	            clearInterval( all.shift() );
+	            clearInterval(all.shift());
 	        }
 	    }
 	};
@@ -37,13 +36,13 @@
 			this.origLevel	= [];
 			this.mapWidth	= 6;
 			this.map 		= document.querySelector("#map");
-			EQuest.infoNode   = document.querySelector("#info");
 			this.hud        = {
 				hearts: document.querySelector("#hearts")
 			};
 
 			this.player = {};
 			this.editor 	= null;
+			EQuest.infoNode   = document.querySelector("#info");
 		}
 
 		createRow() {
@@ -69,6 +68,8 @@
 			let defPower	= 0;
 			let health      = 0;
 			let canPatrol   = false;
+			let atkMod      = false;
+			let defMod      = false;
 			let name 		= "Unknown";
 
 			switch(n) {
@@ -91,8 +92,8 @@
 					break;
 				case "e":
 					// Exit
-					n 		 = "&#9749";
-					name 	 = "coffee";
+					n 		 = "&#128682";
+					name 	 = "door";
 					break;
 				case "g":
 					// Ghost
@@ -142,6 +143,14 @@
 					n 	   	 = "::";
 					name   	 = "path";
 					break;
+				case "a4":
+					// Attack modifier
+					atkMod 	 = {
+						value: 4
+					};
+					n 		 = "&#9889";
+					name 	 = "attack powerup";
+					break;
 				default:
 					// Unknown characters fill with solid wall
 					n 		 = "&#127794";
@@ -167,6 +176,9 @@
 			} else if (isPlayer) {
 				r.className = r.className + " Player";
 				this.setAttr(r, "loc", i);
+			} else if (atkMod) {
+				this.setAttr(r, "mod", "attack");
+				this.setAttr(r, "val", atkMod.value);
 			}
 
 			this.setAttr(r, "name", name);
@@ -257,6 +269,14 @@
 				EQuest.info("I'm not walking into a wall");
 			} else {
 				let curLoc = this.player.loc;
+				// did we run over a powerup?
+				if (this.level[dest] == "a4") {
+					let aval = parseInt(this.getAttr(tile, "val"));
+					this.player.attackPower = (this.player.attackPower + aval);
+					EQuest.info("You picked up a <strong>lightning</strong> mod");
+					EQuest.info("Your attack power is now <strong>" + this.player.attackPower + "</strong>", true);
+				}
+
 				this.level[dest] = "@";
 				this.level[curLoc] = "=";
 				this.player.loc = dest;
@@ -318,7 +338,7 @@
 
 						if (typeof Game.onattackend !== "undefined") {
 							try {
-								Game.onattackend(mob);
+								Game.onattackend(mob, tile);
 							} catch(err) {
 								console.log("An error occurred in the onattackend callback: %s", err);
 								clearInterval(combat);
@@ -476,7 +496,7 @@
 
 window.addEventListener("load", function() {
 	let editor = ace.edit("editor");
-	editor.setTheme("ace/theme/monokai");
+	editor.setTheme("ace/theme/textmate");
 	editor.getSession().setMode("ace/mode/javascript");
 	EQuest.editor = editor;
 	EQuest.onload();
