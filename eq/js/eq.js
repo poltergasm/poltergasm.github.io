@@ -392,7 +392,6 @@
 					if (mobHealth < 1) {
 						let str = "You slayed the <strong>" + mob + "</strong>";
 						if (mobHealth < -15) {
-							console.log(mobHealth);
 							str = "You smashed the <strong>" + mob + "</strong> into dust";
 						}
 						EQuest.info(str);
