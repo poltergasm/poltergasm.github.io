@@ -4,7 +4,7 @@ eQuest.onload = function() {
 		author: "Poltergasm",
 		name  : "Tutorial",
 		currentRoom: {
-			number: 0,
+			number: 1,
 			origLevel: []
 		},
 		rooms : [
@@ -19,15 +19,15 @@ eQuest.onload = function() {
 
 		            [
 		            	'x', 'x', 'x', 'x', 'x', 'x',
-		            	'x', '@', '=', '=', 's', 'x',
-		            	'x', 'x', 'x', 'x', '=', 'x',
+		            	'x', '=', '=', '=', 's', 'x',
+		            	'x', '@', 'x', 'x', 'e1', 'x',
 		            	'x', 'x', 'x', 'x', 'x', 'x'
 		            ]
 		        ]
 	}
 
     this.origLevel = this.level.rooms[this.level.currentRoom.number].slice();
-    this.player.loc = 7;
+    this.player.loc = this.level.rooms[this.level.currentRoom.number].indexOf("@");
     this.levelName.innerHTML = this.level.name + " - By " + this.level.author;
 
     let base = this;
