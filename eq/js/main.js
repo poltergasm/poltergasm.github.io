@@ -4,7 +4,7 @@ eQuest.onload = function() {
 		author: "Poltergasm",
 		name  : "Tutorial",
 		currentRoom: {
-			number: 1,
+			number: 0,
 			origLevel: []
 		},
 		rooms : [
@@ -39,6 +39,7 @@ eQuest.onload = function() {
 			let words = base.prompt.value;
 			words = words.split(" ");
 			if (words.length > 0) {
+				EQuest.info('<font style="color:#c0c0c0; font-style: italic">' + words.join(" ") + '</font>');
 				if (base.player.isDead) {
 					if (words[0] != "reload") {
 						EQuest.info("You can't do that while you're dead. Try <strong>reload</strong>");
@@ -52,9 +53,9 @@ eQuest.onload = function() {
 					case "east" : base.player.move("east"); break;
 					case "south": base.player.move("south"); break;
 					case "west" : base.player.move("west"); break;
-					case "attack":
+					case "fight":
 						if (words.length < 2) {
-							EQuest.info("What did you want me to attack exactly?");
+							EQuest.info("What did you want me to fight exactly?");
 						} else {
 							base.attack(words[1]);
 						}
