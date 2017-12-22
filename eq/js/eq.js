@@ -32,7 +32,7 @@
 
 	class EQuest {
 		constructor() {
-			this.level  	= [];
+			this.level  	= {};
 			this.origLevel	= [];
 			this.mapWidth	= 6;
 			this.map 		= document.querySelector("#map");
@@ -45,6 +45,7 @@
 			this.editor 	= null;
 			this.gems   	= 0;
 			this.prompt     = document.querySelector("#prompt > input");
+			this.levelName  = document.querySelector('#level-title');
 			EQuest.infoNode = document.querySelector("#log");
 		}
 
@@ -75,36 +76,35 @@
 			let canPatrol   = false;
 			let atkMod      = false;
 			let defMod      = false;
+			let toRoom      = -1;
 			let name 		= "Unknown";
 
-			switch(n) {
-				case "@":
+			let reDoor
+			if (n == "@") {
 					// The Player
 					isPlayer = true;
 					n 		 = "mage";
 					idx   	 = 8;
 					name 	 = "Player";
-					break;
-				case "d":
+			} else if (n == "d") {
 					// Player death
 					isPlayer = true;
 					n 		 = "skull";
 					idx 	 = 10;
 					name 	 = "Player";
-					break;
-				case "x":
+			} else if (n == "x") {
 					// Solid wall
 					idx 	 = 12;
 					n 		 = "tree";
 					name 	 = "wall";
-					break;
-				case "e":
+			} else if (n.substring(0, 1) == "e") {
 					// Exit
+					let found = n.match(/^e(\d+)/)
 					idx 	 = 2;
 					n 		 = "door";
 					name 	 = "door";
-					break;
-				case "g":
+					toRoom   = found[1];
+			} else if (n == "g") {
 					// Ghost
 					isEnemy  = true;
 					atkPower = 3;
@@ -113,8 +113,7 @@
 					n        = "ghost";
 					idx 	 = 5;
 					name     = "Ghost";
-					break;
-				case "c":
+			} else if (n == "c") {
 					// Crab
 					isEnemy	 = true;
 					atkPower = 2;
@@ -123,8 +122,7 @@
 					idx 	 = 1;
 					n 		 = "crab";
 					name     = "Crab";
-					break;
-				case "k":
+			} else if (n == "k") {
 					// Scorpion
 					isEnemy	 = true;
 					atkPower = 3;
@@ -133,8 +131,7 @@
 					idx 	 = 9;
 					n 		 = "scorpion";
 					name     = "Scorpion";
-					break;
-				case "m":
+			} else if (n == "m") {
 					// Monster
 					isEnemy	 = true;
 					canPatrol = true;
@@ -144,8 +141,7 @@
 					idx 	 = 7;
 					n 		 = "jellyfish";
 					name     = "Jellyfish";
-					break;
-				case "f":
+			} else if (n == "f") {
 					// Fire
 					isEnemy  = true;
 					atkPower = 1000;
@@ -154,21 +150,18 @@
 					idx 	 = 3;
 					n 		 = "fire";
 					name 	 = "fire";
-					break;
-				case "s":
+			} else if (n == "s") {
 					// Gemstone
 					idx  	 = 4;
 					n 		 = "gemstone";
 					name 	 = "gemstone";
 					isGem    = true;
-					break;
-				case "=":
+			} else if (n == "=") {
 					// Path
 					isPath 	 = true;
 					n 	   	 = "::";
 					name   	 = "path";
-					break;
-				case "a4":
+			} else if (n == "a4") {
 					// Attack modifier
 					atkMod 	 = {
 						value: 4
@@ -176,13 +169,11 @@
 					idx      = 0;
 					n 		 = "bolt";
 					name 	 = "attack powerup";
-					break;
-				default:
+			} else {
 					// Unknown characters fill with solid wall
 					idx 	 = 12;
 					n 		 = "tree";
 					name 	 = "wall";
-					break;
 			} // End switch
 
 			let r = document.createElement("div");
@@ -208,6 +199,8 @@
 				this.setAttr(r, "val", atkMod.value);
 			} else if (isGem) {
 				this.setAttr(r, "gem", "true");
+			} else if (toRoom) {
+				this.setAttr(r, "door", toRoom);
 			}
 
 			this.setAttr(r, "name", name);
@@ -247,10 +240,11 @@
 			}
 
 			// now create the map
-			let cells = this.level.length;
+			let room = this.level.rooms[this.level.currentRoom.number]
+			let cells = room.length;
 			let row   = this.createRow();
 			for (let i = 0; i < cells; i++) {
-				this.createCol(row, this.level[i], i);
+				this.createCol(row, room[i], i);
 				if (i > 0 && (i+1) % this.mapWidth === 0) {
 					row = this.createRow();
 				}
@@ -286,7 +280,7 @@
 						}
 
 						// can we go that way?
-						if (typeof base.level[dir] !== "undefined") {
+						if (typeof room[dir] !== "undefined") {
 							let tile = document.querySelector("[data-tile='" + dir + "']");
 							let tileName = base.getAttr(tile, "name");
 							if (tileName == "Player") {
@@ -295,8 +289,8 @@
 								interval.clearAll();
 							} else {
 								if (tileName == "path") {
-									base.level[dir] = "m";
-									base.level[mloc] = "=";
+									room[dir] = "m";
+									room[mloc] = "=";
 									base.updateMap();
 								}
 							}
@@ -311,27 +305,35 @@
 			if (this.getAttr(tile, "name") == "wall") {
 				EQuest.info("I'm not walking into a wall");
 			} else {
+				let room = this.level.rooms[this.level.currentRoom.number];
 				let curLoc = this.player.loc;
 				// did we run over a powerup?
-				if (this.level[dest] == "a4") {
+				if (room[dest] == "a4") {
 					let aval = parseInt(this.getAttr(tile, "val"));
 					this.player.attackPower = (this.player.attackPower + aval);
 					EQuest.info("You picked up a <strong>lightning</strong> mod");
 					EQuest.info("Your attack power is now <strong>" + this.player.attackPower + "</strong>", true);
 				}
 
-				let lastDestTile = this.level[dest];
-				this.level[dest] = "@";
-				this.level[curLoc] = "=";
+				let lastDestTile = room[dest];
+				room[dest] = "@";
+				room[curLoc] = "=";
 				this.player.loc = dest;
 
 				// oops, we hit a bad guy
 				if (this.getAttr(tile, "enemy")) {
 					let tileN = this.getAttr(tile, "name");
 					this.player.hearts = 0;
-					this.level[dest] = "d";
+					room[dest] = "d";
 					EQuest.info("You walked into a <strong>" + tileN + "</strong> and died");
 					this.player.isDead = true;
+				}
+
+				// hit a door
+				if (this.getAttr(tile, "door")) {
+					let roomNum = parseInt(this.getAttr(tile, "door"));
+					this.level.currentRoom.number = (roomNum - 1);
+					this.player.loc = this.level.rooms[this.level.currentRoom.number].indexOf("@");
 				}
 
 				if (lastDestTile == "s") {
@@ -348,7 +350,7 @@
 		}
 
 		resetGame() {
-			this.level = this.origLevel.slice();
+			this.level.rooms[this.level.currentRoom.number] = this.origLevel.slice();
 			this.player.isDead = false;
 			this.player.loc    = 7;
 			this.player.hearts = 8;
@@ -360,7 +362,8 @@
 		// Player related stuff
 
 		killPlayer() {
-			this.level[this.player.loc] = "d";
+			let room = this.level.rooms[this.level.currentRoom.number];
+			room[this.player.loc] = "d";
 			this.player.isDead = true;
 			this.updateMap();
 			EQuest.info("You died!");
@@ -379,21 +382,26 @@
 			let mobHealth 	= parseInt(this.getAttr(tile, "max-health"));
 			let fighting = true;
 			let base = this;
+			let room = this.level.rooms[this.level.currentRoom.number];
 			let combat = setInterval(function() {
 				let playerRoll = Math.floor(Math.random() * (base.player.attackPower+1));
 				let mobRoll    = Math.floor(Math.random() * (mobDef+1));
 				if (playerRoll > mobRoll) {
 					mobHealth = mobHealth - playerRoll;
+					EQuest.info("You hit the <strong>" + mob + "</strong> for <strong>" + playerRoll + "</strong> damage");
 					if (mobHealth < 1) {
-						EQuest.info("You slayed the <strong>" + mob + "</strong>");
-						base.level[base.getAttr(tile, "tile")] = "=";
+						let str = "You slayed the <strong>" + mob + "</strong>";
+						if (mobHealth < 15) {
+							str = "You smashed the <strong>" + mob + "</strong> into dust";
+						}
+						EQuest.info(str);
+						room[base.getAttr(tile, "tile")] = "=";
 						base.updateMap();
 						base.player.fighting = false;
 
 						clearInterval(combat);
 						return true;
 					} else {
-						EQuest.info("You hit the <strong>" + mob + "</strong> for <strong>" + playerRoll + "</strong> damage");
 						EQuest.info("It has <strong>" + mobHealth + "</strong> remaining", true);
 					}
 				} else {
@@ -475,7 +483,8 @@
 					break;
 			}
 
-			if (typeof this.level[dest] !== "undefined") {
+			let room = this.level.rooms[this.level.currentRoom.number];
+			if (typeof room[dest] !== "undefined") {
 				this.moveDest(dest);
 			} else {
 				EQuest.info("I'm not walking into the void");
@@ -496,7 +505,8 @@
 			}
 
 			if (t != 0) {
-				if (typeof this.level[t] !== "undefined") {
+				let room = this.level.rooms[this.level.currentRoom.number];
+				if (typeof room[t] !== "undefined") {
 					let tile = document.querySelector("[data-tile='" + t + "']");
 					EQuest.info("You see a <strong>" + this.getAttr(tile, "name") + "</strong>");
 

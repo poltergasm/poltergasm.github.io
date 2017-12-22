@@ -1,13 +1,34 @@
 
 eQuest.onload = function() {
-	this.level =  ['x', 'x', 'x', 'x', 'x', 'x',
-                 'x', '@', 'x', '=', 'm', 'x',
-                 'x', '=', 'g', '=', '=', 'x',
-                 'x', 'c', 'x', '=', '=', 'x',
-                 'x', 'a4', 'x', 's', 's', 'x',
-                 'x', 'x', 'x', 'x', 'x', 'x'];
-    this.origLevel = this.level.slice();
+	this.level =  {
+		author: "Poltergasm",
+		name  : "Tutorial",
+		currentRoom: {
+			number: 0,
+			origLevel: []
+		},
+		rooms : [
+					[
+						'x', 'x', 'x', 'x', 'x', 'x',
+		                 'x', '@', 'x', '=', 'm', 'x',
+		                 'x', '=', 'g', '=', '=', 'x',
+		                 'x', 'c', 'x', '=', '=', 'x',
+		                 'x', 'a4', 'x', 'f', '=', 'x',
+		                 'x', 'x', 'x', 'x', 'e2', 'x'
+		            ],
+
+		            [
+		            	'x', 'x', 'x', 'x', 'x', 'x',
+		            	'x', '@', '=', '=', 's', 'x',
+		            	'x', 'x', 'x', 'x', '=', 'x',
+		            	'x', 'x', 'x', 'x', 'x', 'x'
+		            ]
+		        ]
+	}
+
+    this.origLevel = this.level.rooms[this.level.currentRoom.number].slice();
     this.player.loc = 7;
+    this.levelName.innerHTML = this.level.name + " - By " + this.level.author;
 
     let base = this;
 	this.updateMap();
@@ -38,6 +59,13 @@ eQuest.onload = function() {
 							base.attack(words[1]);
 						}
 						break;
+					case "skitpowersactivate":
+						base.player.attackPower = 150;
+						base.player.defencePower = 150;
+						let str = "You feel a surge of power. ";
+						str += "Your attack and defence power have been raised to <strong>150</strong>";
+						EQuest.info(str);
+						break;
 					case "reload": base.resetGame(); break;
 					default:
 						EQuest.info("I don't understand <strong>" + words[0] + "</strong>");
@@ -62,6 +90,7 @@ btnImport.addEventListener('click', function(e) {
 		eQuest.level = arr;
 		eQuest.origLevel = arr.slice();
 		eQuest.player.loc = arr.indexOf('@');
+		eQuest.levelName.innerHTML = eQuest.level.name + " - By " + this.level.author;
 		eQuest.updateMap();
 	}
 
