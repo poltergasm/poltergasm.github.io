@@ -37,12 +37,14 @@
 			this.mapWidth	= 6;
 			this.map 		= document.querySelector("#map");
 			this.hud        = {
-				hearts: document.querySelector("#hearts")
+				hearts: document.querySelector("#hearts"),
+				gems: document.querySelector('#gems')
 			};
 
-			this.player = {};
+			this.player     = {};
 			this.editor 	= null;
-			EQuest.infoNode   = document.querySelector("#info");
+			this.gems   	= 0;
+			EQuest.infoNode = document.querySelector("#info");
 		}
 
 		createRow() {
@@ -64,6 +66,7 @@
 			let isPath 		= false;
 			let isPlayer 	= false;
 			let isEnemy 	= false;
+			let isGem       = false;
 			let atkPower    = 0;
 			let defPower	= 0;
 			let health      = 0;
@@ -82,7 +85,8 @@
 				case "d":
 					// Player death
 					isPlayer = true;
-					n 		 = "&#9760";
+					//n 		 = "&#9760";
+					n 		 = "&#9980";
 					name 	 = "Player";
 					break;
 				case "x":
@@ -136,6 +140,7 @@
 					// Gemstone
 					n 		 = "&#128142";
 					name 	 = "gemstone";
+					isGem    = true;
 					break;
 				case "=":
 					// Path
@@ -179,6 +184,8 @@
 			} else if (atkMod) {
 				this.setAttr(r, "mod", "attack");
 				this.setAttr(r, "val", atkMod.value);
+			} else if (isGem) {
+				this.setAttr(r, "gem", "true");
 			}
 
 			this.setAttr(r, "name", name);
@@ -220,6 +227,15 @@
 					row = this.createRow();
 				}
 			}
+
+			// gems
+			let gems = document.querySelectorAll("[data-gem='true']");
+			this.gems = gems.length;
+			let gemPrint = "";
+			for (let i = 0; i < this.gems; i++) {
+				gemPrint += "&#128142";
+			}
+			this.hud.gems.innerHTML = gemPrint;
 
 			// patrolling enemies
 			let patrols = document.querySelectorAll("[data-patrol='true']");
@@ -277,6 +293,7 @@
 					EQuest.info("Your attack power is now <strong>" + this.player.attackPower + "</strong>", true);
 				}
 
+				let lastDestTile = this.level[dest];
 				this.level[dest] = "@";
 				this.level[curLoc] = "=";
 				this.player.loc = dest;
@@ -288,6 +305,15 @@
 					this.level[dest] = "d";
 					EQuest.info("You walked into a <strong>" + tileN + "</strong> and died");
 					this.player.isDead = true;
+				}
+
+				if (lastDestTile == "s") {
+					this.gems = (this.gems - 1);
+					if (this.gems == 0) {
+						EQuest.info("Congratulations, you found all the gemstones!");
+						EQuest.info("Click <strong>Reset</strong> to play again, or load a new map", true);
+						this.player.finishedMap = true;
+					}
 				}
 
 				this.updateMap();
@@ -479,6 +505,7 @@
 			this.eq 		 = eq;
 			this.loc 		 = 7;
 			this.isDead 	 = false;
+			this.finishedMap = false;
 			this.hearts		 = 8;
 			this.attackPower = 1;
 			this.fighting    = false;
@@ -491,13 +518,14 @@
 	}
 
 	e.player = new Player(e);
-	window.EQuest = e;
+	window.eQuest = e;
+	window.EQuest = EQuest;
 })();
 
 window.addEventListener("load", function() {
 	let editor = ace.edit("editor");
 	editor.setTheme("ace/theme/textmate");
 	editor.getSession().setMode("ace/mode/javascript");
-	EQuest.editor = editor;
-	EQuest.onload();
+	eQuest.editor = editor;
+	eQuest.onload();
 });

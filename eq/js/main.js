@@ -1,5 +1,5 @@
 
-EQuest.onload = function() {
+eQuest.onload = function() {
 	this.level =  ['x', 'x', 'x', 'x', 'x', 'x',
                  'x', '@', 'x', '=', 'm', 'x',
                  'x', '=', 'g', '=', '=', 'x',
@@ -17,18 +17,20 @@ let btnReset = document.querySelector('#reset');
 let btnImport = document.querySelector('#submitMap');
 let tipCard   = document.querySelectorAll('.tip-card');
 btnRun.addEventListener('click', function() {
-	if (EQuest.player.isDead) {
+	if (eQuest.player.isDead) {
 		EQuest.info("You can't do that while you're dead");
+	} else if (eQuest.player.finishedMap) {
+		EQuest.info("You've already won. Reset the map, or load a new one!");
 	} else {
-    	let val = EQuest.editor.getValue();
-    	val += "\nlet _g = new Game(EQuest.player); window.Game = _g;";
+    	let val = eQuest.editor.getValue();
+    	val += "\nlet _g = new Game(eQuest.player); window.Game = _g;";
     	let fn = new Function(val);
     	fn();
     }
 });
 
 btnReset.addEventListener('click', function() {
-	EQuest.resetGame();
+	eQuest.resetGame();
 });
 
 btnImport.addEventListener('click', function(e) {
@@ -38,10 +40,10 @@ btnImport.addEventListener('click', function(e) {
 		// make it acceptable for JSON.parse
 		val = val.replace(/'/g, '"');
 		let arr = JSON.parse(val);
-		EQuest.level = arr;
-		EQuest.origLevel = arr.slice();
-		EQuest.player.loc = arr.indexOf('@');
-		EQuest.updateMap();
+		eQuest.level = arr;
+		eQuest.origLevel = arr.slice();
+		eQuest.player.loc = arr.indexOf('@');
+		eQuest.updateMap();
 	}
 
 	e.preventDefault();
