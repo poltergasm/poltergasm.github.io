@@ -9,29 +9,48 @@ eQuest.onload = function() {
     this.origLevel = this.level.slice();
     this.player.loc = 7;
 
+    let base = this;
 	this.updateMap();
+	this.prompt.focus();
+	this.prompt.addEventListener("keyup", function(e) {
+		e.preventDefault();
+		if (e.keyCode === 13) {
+			let words = base.prompt.value;
+			words = words.split(" ");
+			if (words.length > 0) {
+				if (base.player.isDead) {
+					if (words[0] != "reload") {
+						EQuest.info("You can't do that while you're dead. Try <strong>reload</strong>");
+						base.prompt.value = "";
+						return false;
+					}
+				}
+			
+				switch(words[0]) {
+					case "north": base.player.move("north"); break;
+					case "east" : base.player.move("east"); break;
+					case "south": base.player.move("south"); break;
+					case "west" : base.player.move("west"); break;
+					case "attack":
+						if (words.length < 2) {
+							EQuest.info("What did you want me to attack exactly?");
+						} else {
+							base.attack(words[1]);
+						}
+						break;
+					case "reload": base.resetGame(); break;
+					default:
+						EQuest.info("I don't understand <strong>" + words[0] + "</strong>");
+				}
+			}
+
+			base.prompt.value = "";
+		}
+	});
 };
 
-let btnRun = document.querySelector('#run');
-let btnReset = document.querySelector('#reset');
 let btnImport = document.querySelector('#submitMap');
 let tipCard   = document.querySelectorAll('.tip-card');
-btnRun.addEventListener('click', function() {
-	if (eQuest.player.isDead) {
-		EQuest.info("You can't do that while you're dead");
-	} else if (eQuest.player.finishedMap) {
-		EQuest.info("You've already won. Reset the map, or load a new one!");
-	} else {
-    	let val = eQuest.editor.getValue();
-    	val += "\nlet _g = new Game(eQuest.player); window.Game = _g;";
-    	let fn = new Function(val);
-    	fn();
-    }
-});
-
-btnReset.addEventListener('click', function() {
-	eQuest.resetGame();
-});
 
 btnImport.addEventListener('click', function(e) {
 	let code = document.querySelector('#mapcode');

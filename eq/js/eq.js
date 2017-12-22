@@ -44,7 +44,8 @@
 			this.player     = {};
 			this.editor 	= null;
 			this.gems   	= 0;
-			EQuest.infoNode = document.querySelector("#info");
+			this.prompt     = document.querySelector("#prompt > input");
+			EQuest.infoNode = document.querySelector("#log");
 		}
 
 		createRow() {
@@ -137,8 +138,8 @@
 					// Monster
 					isEnemy	 = true;
 					canPatrol = true;
-					atkPower = 2;
-					defPower = 2;
+					atkPower = 1;
+					defPower = 0;
 					health   = 1;
 					idx 	 = 7;
 					n 		 = "jellyfish";
@@ -224,11 +225,8 @@
 		}
 
 		static info(t, nl=false) {
-			if (nl) {
-				EQuest.infoNode.innerHTML += "<br>" + t;
-			} else {
-				EQuest.infoNode.innerHTML = t;
-			}
+			EQuest.infoNode.innerHTML += "<br>" + t;
+			EQuest.infoNode.scrollTop = EQuest.infoNode.scrollHeight;
 		}
 
 		updateMap() {
@@ -393,16 +391,6 @@
 						base.updateMap();
 						base.player.fighting = false;
 
-						if (typeof Game.onattackend !== "undefined") {
-							try {
-								Game.onattackend(mob, tile);
-							} catch(err) {
-								console.log("An error occurred in the onattackend callback: %s", err);
-								clearInterval(combat);
-								return true;
-							}
-						}
-
 						clearInterval(combat);
 						return true;
 					} else {
@@ -460,13 +448,13 @@
 			let base = this;
 			for (let key in dests) {
 				if (dests.hasOwnProperty(key)) {
-					canAttackTile = base.lookForMob(key, dests[key], mob);
+					canAttackTile = this.lookForMob(key, dests[key], mob);
 					if (canAttackTile) break;
 				}
 			};
 
-			if (canAttackTile === "undefined") {
-				EQuest.info("I can't find a " + mob + " to fight");
+			if (!canAttackTile) {
+				EQuest.info("I can't find a <strong>" + mob + "</strong> to fight");
 			} else {
 				this.fightMob(mob, canAttackTile);
 			}
@@ -554,9 +542,5 @@
 })();
 
 window.addEventListener("load", function() {
-	let editor = ace.edit("editor");
-	editor.setTheme("ace/theme/textmate");
-	editor.getSession().setMode("ace/mode/javascript");
-	eQuest.editor = editor;
 	eQuest.onload();
 });
