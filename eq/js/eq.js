@@ -70,6 +70,7 @@
 			let atkPower    = 0;
 			let defPower	= 0;
 			let health      = 0;
+			let idx         = -1;
 			let canPatrol   = false;
 			let atkMod      = false;
 			let defMod      = false;
@@ -79,19 +80,20 @@
 				case "@":
 					// The Player
 					isPlayer = true;
-					n 		 = "&#129497";
+					n 		 = "mage";
+					idx   	 = 6;
 					name 	 = "Player";
 					break;
 				case "d":
 					// Player death
 					isPlayer = true;
-					//n 		 = "&#9760";
 					n 		 = "&#9980";
 					name 	 = "Player";
 					break;
 				case "x":
 					// Solid wall
-					n 		 = "&#127794";
+					idx 	 = 9;
+					n 		 = "tree";
 					name 	 = "wall";
 					break;
 				case "e":
@@ -105,7 +107,8 @@
 					atkPower = 3;
 					defPower = 5;
 					health   = 6;
-					n        = "&#128123";
+					n        = "ghost";
+					idx 	 = 3;
 					name     = "Ghost";
 					break;
 				case "c":
@@ -114,7 +117,8 @@
 					atkPower = 2;
 					defPower = 1;
 					health   = 3;
-					n 		 = "&#x1F980";
+					idx 	 = 1;
+					n 		 = "crab";
 					name     = "Crab";
 					break;
 				case "m":
@@ -124,8 +128,9 @@
 					atkPower = 2;
 					defPower = 2;
 					health   = 1;
-					n 		 = "&#128126";
-					name     = "Monster";
+					idx 	 = 5;
+					n 		 = "jellyfish";
+					name     = "Jellyfish";
 					break;
 				case "f":
 					// Fire
@@ -138,7 +143,8 @@
 					break;
 				case "s":
 					// Gemstone
-					n 		 = "&#128142";
+					idx  	 = 2;
+					n 		 = "gemstone";
 					name 	 = "gemstone";
 					isGem    = true;
 					break;
@@ -153,12 +159,14 @@
 					atkMod 	 = {
 						value: 4
 					};
-					n 		 = "&#9889";
+					idx      = 0;
+					n 		 = "bolt";
 					name 	 = "attack powerup";
 					break;
 				default:
 					// Unknown characters fill with solid wall
-					n 		 = "&#127794";
+					idx 	 = 9;
+					n 		 = "tree";
 					name 	 = "wall";
 					break;
 			} // End switch
@@ -189,7 +197,15 @@
 			}
 
 			this.setAttr(r, "name", name);
-			r.innerHTML = n;
+			//r.innerHTML = n;
+			if (idx > -1) {
+				let img = document.createElement("img");
+				img.src = sprites.canvas.sprites[idx].src;
+				img.className = "sprite";
+				r.appendChild(img);
+			} else {
+				r.innerHTML = n;
+			}
 			root.appendChild(r);
 			return r;
 		}
@@ -208,8 +224,9 @@
 
 			// fill hearts
 			let hearts = "";
+			let heartSrc = sprites.canvas.sprites[4].src;
 			for (let i = 0; i < this.player.hearts; i++) {
-				hearts += "&#x2764";
+				hearts += '<img class="sprite" src="' + heartSrc + '">';
 			}
 			this.hud.hearts.innerHTML = hearts;
 
@@ -229,11 +246,12 @@
 			}
 
 			// gems
+			let gemSrc = sprites.canvas.sprites[2].src;
 			let gems = document.querySelectorAll("[data-gem='true']");
 			this.gems = gems.length;
 			let gemPrint = "";
 			for (let i = 0; i < this.gems; i++) {
-				gemPrint += "&#128142";
+				gemPrint += '<img class="sprite" src="' + gemSrc + '">';
 			}
 			this.hud.gems.innerHTML = gemPrint;
 

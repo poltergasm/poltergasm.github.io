@@ -112,3 +112,13 @@ body {
     display: block;
     clear: both;
 }
+
+.sprite {
+	max-height: 100%;
+	max-width: 100%;
+}
+
+.hud .sprite {
+	max-height: 20px;
+	max-width: 20px;
+}
