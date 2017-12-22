@@ -4,7 +4,7 @@ eQuest.onload = function() {
                  'x', '@', 'x', '=', 'm', 'x',
                  'x', '=', 'g', '=', '=', 'x',
                  'x', 'c', 'x', '=', '=', 'x',
-                 'x', 'a4', 'x', 'x', 's', 'x',
+                 'x', 'a4', 'x', 's', 's', 'x',
                  'x', 'x', 'x', 'x', 'x', 'x'];
     this.origLevel = this.level.slice();
     this.player.loc = 7;
