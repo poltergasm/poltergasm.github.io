@@ -82,20 +82,18 @@ let btnImport = document.querySelector('#submitMap');
 let tipCard   = document.querySelectorAll('.tip-card');
 
 btnImport.addEventListener('click', function(e) {
+	e.preventDefault();
 	let code = document.querySelector('#mapcode');
 	if (code.value.length > 0) {
 		let val = code.value;
 		// make it acceptable for JSON.parse
-		val = val.replace(/'/g, '"');
-		let arr = JSON.parse(val);
-		eQuest.level = arr;
-		eQuest.origLevel = arr.slice();
-		eQuest.player.loc = arr.indexOf('@');
-		eQuest.levelName.innerHTML = eQuest.level.name + " - By " + this.level.author;
+		//val = val.replace(/'/g, '"');
+		eQuest.level = JSON.parse(val);
+		eQuest.origLevel = eQuest.level.rooms[eQuest.level.currentRoom.number].slice();
+		eQuest.player.loc = eQuest.level.rooms[eQuest.level.currentRoom.number].indexOf('@');
+		eQuest.levelName.innerHTML = eQuest.level.name + " - By " + eQuest.level.author;
 		eQuest.updateMap();
 	}
-
-	e.preventDefault();
 });
 
 // create tip cards
